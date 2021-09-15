@@ -1,0 +1,22 @@
+* GHSA一覧取得ツール
+GitHub Security Advisory DBに登録されていないプロダクトのSecurity Advisoryから
+ghsa IDの一覧を取得するクローラー
+
+** 使用方法
+1．~get_ghsa.py~と同じディレクトリに~config.py~を作成
+
+2．~config.py~に以下を参考に記述
+
+~config.py~
+#+BEGIN_SRC python
+USER = "username" #repository owner
+REPOSITORY = "repository_name" #repository name
+OUTPUT_FILE = "output.csv" #output file name
+
+SLEEP = 0.2 #time.sleep(SLEEP) GETリクエストを送信した後のインターバル
+#+END_SRC
+
+3．~python get_ghsa.py~を実行
+
+4．~OUTPUT_FILE~にて指定したファイル名で~result~ディレクトリ以下にcsv形式で保存された結果の確認
+

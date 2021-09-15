@@ -94,7 +94,7 @@ def main():
     # ghsaからcve情報の取得
     get_ghsa_info()
 
-    with open('result/'+output_file, 'w') as f:
+    with open('result/'+OUTPUT_FILE, 'w') as f:
         writer = csv.writer(f)
         for cve in cves:
             writer.writerow(cve)
