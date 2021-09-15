@@ -2,24 +2,24 @@ import json
 import requests
 import re
 import time
+import csv
 
 from bs4 import BeautifulSoup
 
-access_token = "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"
-endpoint = "https://api.github.com/graphql"
-repo_url = "https://github.com/OP-TEE/optee_os"
-ghsa_base_url = repo_url + "/security/advisories"
+from config import *
+
+repo_url = "https://github.com/"+USER+"/"+REPOSITORY
+ghsa_base_url = repo_url+"/security/advisories"
 ghsa_list = []
 cves = []
-
 
 def get_ghsa_info():
 
     for ghsa in ghsa_list:
         ghsa_info = [ghsa]
-        ghsa_url = ghsa_base_url + "/" + ghsa
+        ghsa_url = ghsa_base_url+"/"+ghsa
         res = requests.get(ghsa_url)
-        time.sleep(0.5)
+        time.sleep(SLEEP)
         print("[*]Search", ghsa_url)
         print("[*]Status Code", res.status_code)
         
@@ -28,27 +28,32 @@ def get_ghsa_info():
         div_texts = [div.get_text(strip=True) for div in soup.find_all('div')]
         
         # Affected version
-        affected_version_pattern = re.compile(r"<=? ([0-9]+.[0-9]+.[0-9]+|All versions)")
+        exist_affected_version = False
+        affected_version_pattern = re.compile(r"<=? ([0-9]+.[0-9]+[.0-9]*)|All versions")
         for div_text in div_texts:
             affected_version_info = affected_version_pattern.search(div_text)
             if affected_version_info:
+                exist_affected_version = True
                 if affected_version_info.group(1) not in ghsa_info:
                     ghsa_info.append(affected_version_info.group(1))
-                    print(ghsa_info)
-
+            
         # cves
         exist_cve = False
-        cve_pattern = re.compile(r"CVE-[0-9]{4}-[0-9]{5}")
+        cve_pattern = re.compile(r"CVE-[0-9]{4}-[0-9]+")
         for div_text in div_texts:
             cve_info = cve_pattern.search(div_text)
             if cve_info:
                 exist_cve = True
                 if cve_info.group() not in ghsa_info:
                     ghsa_info.append(cve_info.group())
-                    print(ghsa_info)
 
         if not exist_cve:
             ghsa_info.append(None)
+
+        # add ghsa_info to cves list 
+        print(ghsa_info)
+        cves.append(ghsa_info)
+    
 
 def get_ghsa():
     i = 1
@@ -58,7 +63,7 @@ def get_ghsa():
     while exist_content:
         ghsa_index_page = ghsa_base_url + "?page={}".format(i)
         res = requests.get(ghsa_index_page)
-        time.sleep(1)
+        time.sleep(SLEEP)
         i += 1
         print("[*]Search", ghsa_index_page)
         print("[*]Status Code", res.status_code)
@@ -82,35 +87,17 @@ def get_ghsa():
     print("[*]Total GHSA :", len(ghsa_list))
     
 
-def post(query):
-    headers = {"Authorization": "Bearer {}".format(access_token)}
-    res = requests.post(endpoint, json=query, headers=headers)
-    if res.status_code != 200:
-        raise Execption("failed : {}".format(res.status_code))
-    return res.json()
-
-
 def main():
-    query ={ 'query' :  """
-query {
-  securityAdvisory(ghsaId: "GHSA-w8ww-55c8-83vh"){
-    ghsaId
-    summary
-  }
-}
-"""
-}
-
-    # OP-TEEのghsaの取得
+    # repositoryのghsaの取得
     get_ghsa()
+
+    # ghsaからcve情報の取得
     get_ghsa_info()
 
-    # GitHubAPIから脆弱性情報を取得
-    # for ghsa in ghsa_list:
-    # print(query)
-    # res = post(query)
-    # print('{}'.format(json.dumps(res)))
-
+    with open('result/'+output_file, 'w') as f:
+        writer = csv.writer(f)
+        for cve in cves:
+            writer.writerow(cve)
 
 if __name__ == "__main__":
     main()
