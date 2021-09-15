@@ -50,6 +50,21 @@ def get_ghsa_info():
         if not exist_cve:
             ghsa_info.append(None)
 
+        # optee id
+        exist_optee_id = False
+        optee_id_pattern = re.compile(r"OP-TEE-[0-9]{4}-[0-9]+")
+        for div_text in div_texts:
+            optee_id_info = optee_id_pattern.search(div_text)
+            if optee_id_info:
+                exist_optee_id = True
+                if optee_id_info.group() not in ghsa_info:
+                    ghsa_info.append(optee_id_info.group())
+
+        if not exist_optee_id:
+            ghsa_info.append(None)
+
+        
+
         # add ghsa_info to cves list 
         print(ghsa_info)
         cves.append(ghsa_info)
