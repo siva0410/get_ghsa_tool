@@ -21,3 +21,5 @@ SLEEP = 0.2 #time.sleep(SLEEP) GETリクエストを送信した後のインタ�
 4． ~OUTPUT_FILE~ にて指定したファイル名で ~result~ ディレクトリ以下にcsv形式で保存された結果の確認
 
 | ghsa ID | Affected version | CVE ID |
+
+csvの出力は上記の順番
