@@ -2,24 +2,48 @@
 GitHub Security Advisory DBに登録されていないプロダクトのSecurity Advisoryから
 ghsa IDの一覧とAffected version，およびCVE IDを取得するクローラー
 
+** 動作環境
+   - python 3.8.10
+   - BeautifulSoup4
+
+** インストール方法
+   1. GitHubからこのリポジトリをcloneする．
+   #+BEGIN_SRC shell
+     git clone https://github.com/siva0410/get_ghsa_tool.git
+   #+END_SRC
+
+   2. python3がインストールされていない場合，python3とpip3をインストール（Ubuntuの場合）
+   #+BEGIN_SRC shell
+     sudo apt install python3 python3-pip
+     python3 --version # インストールできたか確認
+   #+END_SRC
+
+   3. BeautifulSoup4がインストールされていない場合，BeautifulSoup4をインストール
+   #+BEGIN_SRC shell
+     pip install BeautifulSoup4
+   #+END_SRC
+   
 ** 使用方法
-1． ~get_ghsa.py~ と同じディレクトリに ~config.py~ を作成
+   1． ~get_ghsa.py~ と同じディレクトリに ~config.py~ を作成
 
-2． ~config.py~ に以下を参考に記述
+   2． ~config.py~ に以下を参考に記述
 
-~config.py~
-#+BEGIN_SRC python
-USER = "user_name" #repository owner
-REPOSITORY = "repository_name" #repository name
-OUTPUT_FILE = "output.csv" #output file name
+   ~config.py~
+   #+BEGIN_SRC python
+     USER = "user_name" #repository owner
+     REPOSITORY = "repository_name" #repository name
+     OUTPUT_FILE = "output.csv" #output file name
 
-SLEEP = 0.2 #time.sleep(SLEEP) GETリクエストを送信した後のインターバル
-#+END_SRC
+     SLEEP = 0.2 #time.sleep(SLEEP) GETリクエストを送信した後のインターバル
+   #+END_SRC
 
-3． ~python get_ghsa.py~ を実行
+   3． ~python3 get_ghsa.py~ を実行
 
-4． ~OUTPUT_FILE~ にて指定したファイル名で ~result~ ディレクトリ以下にcsv形式で保存された結果の確認
+   4． ~OUTPUT_FILE~ にて指定したファイル名で ~result~ ディレクトリ以下にcsv形式で保存された結果の確認
 
-| ghsa ID | Affected version | CVE ID |
+   | ghsa ID | Affected version | CVE ID |
 
-csvの出力は上記の順番
+   csvの出力は上記の順番
+
+** LICENSE
+   MIT License
