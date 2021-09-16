@@ -1,6 +1,7 @@
 * GHSA一覧取得ツール
-GitHub Security Advisory DBに登録されていないプロダクトのSecurity Advisoryから
-ghsa IDの一覧とAffected version，およびCVE IDを取得するクローラー
+** 概要
+   GitHub Security Advisory DBに登録されていないプロダクトのSecurity Advisoryから
+   ghsa IDの一覧とAffected version，およびCVE IDを取得し，csvで出力するツール
 
 ** 動作環境
    - python 3.8.10
