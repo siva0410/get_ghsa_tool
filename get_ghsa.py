@@ -4,12 +4,10 @@ import time
 
 from bs4 import BeautifulSoup
 
-from config import *
+SLEEP = 0.2 # time.sleep(SLEEP)
 
-repo_url = "https://github.com/"+USER+"/"+REPOSITORY
-ghsa_base_url = repo_url+"/security/advisories"
-
-def get_ghsa_info(ghsa_list):
+def get_ghsa_info(ghsa_list, repo_url):
+    ghsa_base_url = repo_url+"/security/advisories"
     ghsa_info_list = []
     for ghsa in ghsa_list:
         ghsa_info = [ghsa]
@@ -62,7 +60,8 @@ def get_ghsa_info(ghsa_list):
     return ghsa_info_list
     
 
-def get_ghsa():
+def get_ghsa(repo_url):
+    ghsa_base_url = repo_url+"/security/advisories"
     ghsa_list = []
     page_num = 1
     before_len = 0
