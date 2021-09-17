@@ -8,11 +8,9 @@ from config import *
 
 repo_url = "https://github.com/"+USER+"/"+REPOSITORY
 ghsa_base_url = repo_url+"/security/advisories"
-ghsa_list = []
-cves = []
 
-def get_ghsa_info():
-
+def get_ghsa_info(ghsa_list):
+    ghsa_info_list = []
     for ghsa in ghsa_list:
         ghsa_info = [ghsa]
         ghsa_url = ghsa_base_url+"/"+ghsa
@@ -44,7 +42,7 @@ def get_ghsa_info():
         if not exist_affected_version:
             ghsa_info.append(None)
             
-        # cves
+        # CVE ID
         exist_cve = False
         cve_pattern = re.compile(r"CVE-[0-9]{4}-[0-9]+")
         for div_text in div_texts:
@@ -57,21 +55,24 @@ def get_ghsa_info():
         if not exist_cve:
             ghsa_info.append(None)
 
-        # add ghsa_info to cves list 
+        # add ghsa_info to ghsa_info_list 
         print(ghsa_info)
-        cves.append(ghsa_info)
+        ghsa_info_list.append(ghsa_info)
+
+    return ghsa_info_list
     
 
 def get_ghsa():
-    i = 1
-    exist_content = True
+    ghsa_list = []
+    page_num = 1
     before_len = 0
+    exist_content = True
     
     while exist_content:
-        ghsa_index_page = ghsa_base_url + "?page={}".format(i)
+        ghsa_index_page = ghsa_base_url + "?page={}".format(page_num)
         res = requests.get(ghsa_index_page)
         time.sleep(SLEEP)
-        i += 1
+        page_num += 1
         print("[*]Search", ghsa_index_page)
         print("[*]Status Code", res.status_code)
         
@@ -92,3 +93,4 @@ def get_ghsa():
         before_len = len(ghsa_list)
 
     print("[*]Total GHSA :", len(ghsa_list))
+    return ghsa_list
