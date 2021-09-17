@@ -1,7 +1,10 @@
 * GHSA一覧取得ツール
 ** 概要
    GitHub Security Advisory DBに登録されていないプロダクトのSecurity Advisoryから
-   ghsa IDの一覧とAffected version，およびCVE IDを取得し，csvで出力するツール
+   ghsa IDの一覧とAffected version，およびCVE IDを取得する．
+
+   また，CVE IDが存在する場合，NVDからCVSS，およびCWE IDを取得し，
+   取得した結果をcsv形式で出力するツール
 
 ** 動作環境
    - python 3.8.10
@@ -33,18 +36,19 @@
    #+BEGIN_SRC python
      USER = "user_name" #repository owner
      REPOSITORY = "repository_name" #repository name
-     OUTPUT_FILE = "output.csv" #output file name
 
      SLEEP = 0.2 #time.sleep(SLEEP) GETリクエストを送信した後のインターバル
    #+END_SRC
 
-   3． ~python3 get_ghsa.py~ を実行
+   3． ~python3 main.py -o filename~ を実行
+   オプション一覧
 
-   4． ~OUTPUT_FILE~ にて指定したファイル名で ~result~ ディレクトリ以下にcsv形式で保存された結果の確認
+   | オプション          | 省略          | 説明                                                              |
+   | --output /filename/ | -o /filename/ | 出力されるファイルの名前を指定 指定しなければ ~output.csv~ に出力 |
 
-   | ghsa ID | Affected version | CVE ID |
+   4． オプションにて指定したファイル名で ~result~ ディレクトリ以下にcsv形式で保存された結果の確認
 
-   csvの出力は上記の順番
+   ~ghsa ID, Affected version, CVE ID, CVSSv2, CVSSv3, CWE ID~ の順番でcsvを出力
 
 ** LICENSE
    MIT License
