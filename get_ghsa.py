@@ -1,14 +1,10 @@
-import json
 import requests
 import re
 import time
-import csv
-import argparse
 
 from bs4 import BeautifulSoup
 
 from config import *
-from get_cve_info import *
 
 repo_url = "https://github.com/"+USER+"/"+REPOSITORY
 ghsa_base_url = repo_url+"/security/advisories"
@@ -96,29 +92,3 @@ def get_ghsa():
         before_len = len(ghsa_list)
 
     print("[*]Total GHSA :", len(ghsa_list))
-    
-
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-o','--output', default='output.csv', help='output file name')
-    args = parser.parse_args()
-    
-    # get GHSA IDs from repository
-    get_ghsa()
-
-    # get CVE ID from GHSA ID
-    get_ghsa_info()
-    
-    with open('result/'+args.output, 'w') as f:
-        writer = csv.writer(f)
-        writer.writerow(["GHSA ID", "Affected version", "CVE ID", "CVSSv2", "CVSSv3", "CWE ID", "Description"])
-        for cve in cves:
-            print(cve[2])
-            # if CVE ID exists, get CWE and CVSS from NVD
-            if cve[2]:                
-                cve += get_cve_info(cve[2])            
-            writer.writerow(cve)
-
-
-if __name__ == "__main__":
-    main()
