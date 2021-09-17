@@ -3,10 +3,12 @@ import requests
 import re
 import time
 import csv
+import argparse
 
 from bs4 import BeautifulSoup
 
 from config import *
+from get_cve_info import *
 
 repo_url = "https://github.com/"+USER+"/"+REPOSITORY
 ghsa_base_url = repo_url+"/security/advisories"
@@ -29,13 +31,22 @@ def get_ghsa_info():
         
         # Affected version
         exist_affected_version = False
-        affected_version_pattern = re.compile(r"<=? ([0-9]+.[0-9]+[.0-9]*)|All versions")
+        affected_version_pattern = re.compile(r"<=? ([0-9]+.[0-9]+[.0-9]*)")
+        affected_all_version_pattern = re.compile(r"All versions")
         for div_text in div_texts:
             affected_version_info = affected_version_pattern.search(div_text)
+            affected_all_version_info = affected_all_version_pattern.search(div_text)            
             if affected_version_info:
                 exist_affected_version = True
-                if affected_version_info.group(1) not in ghsa_info:
-                    ghsa_info.append(affected_version_info.group(1))
+                if affected_version_info.group(0) not in ghsa_info:
+                    ghsa_info.append(affected_version_info.group(0))
+            elif affected_all_version_info:
+                exist_affected_version = True
+                if affected_all_version_info.group(0) not in ghsa_info:
+                    ghsa_info.append(affected_all_version_info.group(0))
+
+        if not exist_affected_version:
+            ghsa_info.append(None)
             
         # cves
         exist_cve = False
@@ -88,16 +99,26 @@ def get_ghsa():
     
 
 def main():
-    # repositoryのghsaの取得
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-o','--output', default='output.csv', help='output file name')
+    args = parser.parse_args()
+    
+    # get GHSA IDs from repository
     get_ghsa()
 
-    # ghsaからcve情報の取得
+    # get CVE ID from GHSA ID
     get_ghsa_info()
-
-    with open('result/'+OUTPUT_FILE, 'w') as f:
+    
+    with open('result/'+args.output, 'w') as f:
         writer = csv.writer(f)
+        writer.writerow(["GHSA ID", "Affected version", "CVE ID", "CVSSv2", "CVSSv3", "CWE ID", "Description"])
         for cve in cves:
+            print(cve[2])
+            # if CVE ID exists, get CWE and CVSS from NVD
+            if cve[2]:                
+                cve += get_cve_info(cve[2])            
             writer.writerow(cve)
+
 
 if __name__ == "__main__":
     main()
