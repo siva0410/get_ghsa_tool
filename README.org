@@ -12,16 +12,19 @@
 
 ** インストール方法
    1) GitHubからこのリポジトリをcloneする．
-      #+BEGIN_SRC
+      #+begin_src shell
 	git clone https://github.com/siva0410/get_ghsa_tool.git
+      #+end_src
+      #+BEGIN_SRC shell
+        git clone https://github.com/siva0410/get_ghsa_tool.git
       #+END_SRC
-      
+
    2) python3がインストールされていない場合，python3とpip3をインストール（Ubuntuの場合）
-      #+BEGIN_SRC
-	sudo apt install python3 python3-pip
+      #+BEGIN_SRC shell
+        sudo apt install python3 python3-pip
       #+END_SRC
       #+BEGIN_SRC
-	python3 --version # インストールできたか確認
+        python3 --version # インストールできたか確認
       #+END_SRC
       
    3) BeautifulSoup4がインストールされていない場合，BeautifulSoup4をインストール
@@ -32,7 +35,7 @@
 ** 使用方法
    1) オプションの説明を参考に下記のコマンドを実行
       #+BEGIN_SRC shell
-	python3 main.py -u owner_name -r repository_name -o filename
+        python3 main.py -u owner_name -r repository_name -o filename
       #+END_SRC
 
       オプション一覧
