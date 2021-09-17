@@ -11,33 +11,36 @@
    - BeautifulSoup4
 
 ** インストール方法
-   1. GitHubからこのリポジトリをcloneする．
-   #+BEGIN_SRC shell
-     git clone https://github.com/siva0410/get_ghsa_tool.git
-   #+END_SRC
-   2. python3がインストールされていない場合，python3とpip3をインストール（Ubuntuの場合）
-   #+BEGIN_SRC shell
-     sudo apt install python3 python3-pip
-     python3 --version # インストールできたか確認
-   #+END_SRC
-   3. BeautifulSoup4がインストールされていない場合，BeautifulSoup4をインストール
-   #+BEGIN_SRC shell
-     pip install BeautifulSoup4
-   #+END_SRC
+   1) GitHubからこのリポジトリをcloneする．
+      
+      #+BEGIN_SRC shell
+	git clone https://github.com/siva0410/get_ghsa_tool.git
+      #+END_SRC
+   2) python3がインストールされていない場合，python3とpip3をインストール（Ubuntuの場合）
+      #+BEGIN_SRC shell
+        sudo apt install python3 python3-pip
+        python3 --version # インストールできたか確認
+      #+END_SRC
+   3) BeautifulSoup4がインストールされていない場合，BeautifulSoup4をインストール
+      #+BEGIN_SRC shell
+        pip install BeautifulSoup4
+      #+END_SRC
    
 ** 使用方法
-   1. オプションの説明を参考に下記のコマンドを実行
-   #+BEGIN_SRC shell
-     python3 main.py -u owner_name -r repository_name -o filename
-   #+END_SRC
-   オプション一覧
-   |      | オプション                     | 省略                 | 説明                                                              |
-   |------+--------------------------------+----------------------+-------------------------------------------------------------------|
-   | 必須 | =--owner= /owner_name/         | =-u= /owner_name/    | GHSAを調査したいリポジトリの所有者を指定                          |
-   | 必須 | =--repository= /repository_name/ | =-r= /repository_name/ | GHSAを調査したいリポジトリの名前を指定                            |
-   | 任意 | =--output= /filename/          | =-o= /filename/      | 出力されるファイルの名前を指定 指定しなければ ~output.csv~ に出力 |
-   2.  オプションにて指定したファイル名で ~result~ ディレクトリ以下にcsv形式で保存された結果の確認      
-   ~ghsa ID, Affected version, CVE ID, CVSSv2, CVSSv3, CWE ID~ の順番でcsvを出力（存在しない項目は空白）
+   1) オプションの説明を参考に下記のコマンドを実行
+      #+BEGIN_SRC shell
+	python3 main.py -u owner_name -r repository_name -o filename
+      #+END_SRC
 
+      オプション一覧
+      |      | オプション                       | 省略                   | 説明                                                              |
+      |------+----------------------------------+------------------------+-------------------------------------------------------------------|
+      | 必須 | ~--owner~ /owner_name/           | ~-u~ /owner_name/      | GHSAを調査したいリポジトリの所有者を指定                          |
+      | 必須 | ~--repository~ /repository_name/ | ~-r~ /repository_name/ | GHSAを調査したいリポジトリの名前を指定                            |
+      | 任意 | ~--output~ /filename/            | ~-o~ /filename/        | 出力されるファイルの名前を指定 指定しなければ ~output.csv~ に出力 |
+
+   2) オプションにて指定したファイル名で ~result~ ディレクトリ以下にcsv形式で保存された結果の確認
+      ~ghsa ID, Affected version, CVE ID, CVSSv2, CVSSv3, CWE ID~ の順番でcsvを出力（存在しない項目は空白） 
+      
 ** LICENSE
    MIT License
