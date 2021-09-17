@@ -9,11 +9,13 @@ SLEEP = 0.2 # time.sleep(SLEEP)
 def get_ghsa_info(ghsa_list, repo_url):
     ghsa_base_url = repo_url+"/security/advisories"
     ghsa_info_list = []
+    
     for ghsa in ghsa_list:
         ghsa_info = [ghsa]
         ghsa_url = ghsa_base_url+"/"+ghsa
         res = requests.get(ghsa_url)
         time.sleep(SLEEP)
+        
         print("[*]Search", ghsa_url)
         print("[*]Status Code", res.status_code)
         
