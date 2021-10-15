@@ -23,11 +23,11 @@ CREATE TABLE IF NOT EXISTS cve(cve_id TEXT PRIMARY KEY, cvss_v2 REAL, cvss_v3 RE
 """)
 
     ## cve_cwe table
-    ## |--------+--------+-----------------|
-    ## | cve_id | cwe_id | cve_description |
-    ## |--------+--------+-----------------|
-    ## | TEXT   | TEXT   | TEXT            |
-    ## |--------+--------+-----------------|
+    ## |--------+--------|
+    ## | cve_id | cwe_id | 
+    ## |--------+--------|
+    ## | TEXT   | TEXT   |
+    ## |--------+--------|
     cur.execute("""
 CREATE TABLE IF NOT EXISTS cve_cwe(cve_id TEXT, cwe_id TEXT, PRIMARY KEY(cve_id, cwe_id))
 """)

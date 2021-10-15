@@ -4,43 +4,100 @@
    GHSA IDの一覧とAffected version，およびCVE IDが発行されている場合，CVE IDを取得する．
 
    また，CVE IDが存在する場合，NVDからCVSS，およびCWE IDを取得し，
-   取得した結果をcsv形式で出力する．
+   取得した結果をデータベースに保存する．
 
 ** 動作環境
+   - Ubuntu 20.04
    - python 3.8.10
    - BeautifulSoup4
+   - sqlite3
 
 ** インストール方法
-   1) GitHubからこのリポジトリをcloneする．
-      
-      ~git clone https://github.com/siva0410/get_ghsa_tool.git~
+GitHubからこのリポジトリをcloneする．
+#+BEGIN_SRC     
+git clone https://github.com/siva0410/get_ghsa_tool.git
+#+END_SRC
 
+python3がインストールされていない場合，python3とpip3をインストール（Ubuntuの場合）
 
-   2) python3がインストールされていない場合，python3とpip3をインストール（Ubuntuの場合）
+#+BEGIN_SRC 
+sudo apt install python3 python3-pip
+python3 --version # インストールできたか確認
+#+END_SRC      
       
-      ~sudo apt install python3 python3-pip~
-      
-      ~python3 --version # インストールできたか確認~
-      
-   3) BeautifulSoup4がインストールされていない場合，BeautifulSoup4をインストール
-      
-      ~pip install BeautifulSoup4~
-   
+BeautifulSoup4がインストールされていない場合，BeautifulSoup4をインストール
+
+#+BEGIN_SRC 
+pip install BeautifulSoup4
+#+END_SRC
+
+sqlite3がインストールされていない場合，sqlite3をインストール
+#+BEGIN_SRC
+sudo apt install sqlite3
+pip install pysqlite3
+#+END_SRC
+
 ** 使用方法
-   1) オプションの説明を参考に下記のコマンドを実行
-      
-      ~python3 main.py -u owner_name -r repository_name -o filename~
+オプションの説明を参考に下記のコマンドを実行
 
-      オプション一覧
-      |      | オプション                       | 省略                   | 説明                                                              |
-      |------+----------------------------------+------------------------+-------------------------------------------------------------------|
-      | 必須 | ~--owner~ /owner_name/           | ~-u~ /owner_name/      | GHSAを調査したいリポジトリの所有者を指定                          |
-      | 必須 | ~--repository~ /repository_name/ | ~-r~ /repository_name/ | GHSAを調査したいリポジトリの名前を指定                            |
-      | 任意 | ~--output~ /filename/            | ~-o~ /filename/        | 出力されるファイルの名前を指定 指定しなければ ~output.csv~ に出力 |
+ #+BEGIN_SRC      
+ python3 main.py -u owner_name -r repository_name -o filename
+ #+END_SRC      
 
-   2) オプションにて指定したファイル名で ~result~ ディレクトリ以下にcsv形式で保存された結果の確認
+オプション一覧
+|      | オプション                       | 省略                   | 説明                                                              |
+|------+----------------------------------+------------------------+-------------------------------------------------------------------|
+| 必須 | ~--owner~ /owner_name/           | ~-u~ /owner_name/      | GHSAを調査したいリポジトリの所有者を指定                          |
+| 必須 | ~--repository~ /repository_name/ | ~-r~ /repository_name/ | GHSAを調査したいリポジトリの名前を指定                            |
+| 任意 | ~--output~ /filename/            | ~-o~ /filename/        | 出力されるファイルの名前を指定 指定しなければ ~output.csv~ に出力 |
+
+オプションにて指定したファイル名で ~result~ ディレクトリ以下にcsv形式で保存された結果の確認
       
-      ~ghsa ID, Affected version, CVE ID, CVSSv2, CVSSv3, CWE ID~ の順番でcsvを出力（存在しない項目は空白） 
+~ghsa ID, Affected version, CVE ID, CVSSv2, CVSSv3, CWE ID~ の順番でcsvを出力（存在しない項目は空白）
+
+** データベース
+~database/repository_name.db~ファイルを作成
+取得した結果を以下のテーブルに保存
+
+ghsa table   
+|---------+------------------+--------|
+| ghsa_id | affected_version | cve_id |
+|---------+------------------+--------|
+| TEXT    | TEXT             | TEXT   |
+|---------+------------------+--------|
+
+cve table
+|--------+---------+---------+-----------------|
+| cve_id | cvss_v2 | cvss_v3 | cve_description |
+|--------+---------+---------+-----------------|
+| TEXT   | REAL    | REAL    | TEXT            |
+|--------+---------+---------+-----------------|
+
+cve_cwe table
+|--------+--------|
+| cve_id | cwe_id |
+|--------+--------|
+| TEXT   | TEXT   |
+|--------+--------|
+
+cwe table
+|--------+-----------------|
+| cwe_id | cwe_description |
+|--------+-----------------|
+| TEXT   | TEXT            |
+|--------+-----------------|
+
+sqlの例
++ ghsaの一覧の取得
+#+BEGIN_SRC sql
+select * from ghsa;
+#+END_SRC
+
++ 全てのデータを参照
+#+BEGIN_SRC sql
+select * from ghsa natural left outer join cve natural left outer join cve_cwe natural left outer join cwe;
+#+END_SRC
+
       
 ** LICENSE
    MIT License
