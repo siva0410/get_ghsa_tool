@@ -97,9 +97,22 @@ INSERT OR IGNORE INTO cwe(cwe_id, cwe_description) VALUES(:cwe_id, :cwe_descript
         conn.commit()
 
 
-def insert_db(conn, cur, row):
-    insert_ghsa_table(conn, cur, row)
-    print(row)
+def insert_db(dbname, unite_info_list):
+    # open db connection
+    conn = sqlite3.connect(dbname)
+    cur = conn.cursor()
+    
+    # create db tables
+    create_tables(conn, cur)
+   
+    colmun_names = ['ghsa_id', 'affected_version', 'cve_id', 'cvss_v2', 'cvss_v3', 'cve_description', 'cwe_id', 'cwe_description']
+
+    for unite_info in unite_info_list:
+        unite_info_dict = dict(zip(colmun_names, unite_info))
+        insert_db(conn, cur, unite_info_dict)
+
+    # insert data to each tables
+    insert_ghsa_table(conn, cur, row)   
     if row['cve_id']:
         insert_cve_table(conn, cur, row)
         insert_cve_cwe_table(conn, cur, row)
@@ -107,5 +120,9 @@ def insert_db(conn, cur, row):
         
     # print tables
     cur.execute("""
-SELECT * FROM ghsa, cve, cve_cwe, cwe
+SELECT * FROM ghsa, cve, cve_cwe, cweselect * from ghsa natural left outer join cve natural left outer join cve_cwe natural left outer join cwe
 """)
+
+    # clise db connection
+    cur.close()
+    conn.close()
