@@ -41,19 +41,17 @@ pip install pysqlite3
 オプションの説明を参考に下記のコマンドを実行
 
  #+BEGIN_SRC      
- python3 main.py -u owner_name -r repository_name -o filename
+ python3 main.py -u owner_name -r repository_name
  #+END_SRC      
 
 オプション一覧
-|      | オプション                       | 省略                   | 説明                                                              |
-|------+----------------------------------+------------------------+-------------------------------------------------------------------|
-| 必須 | ~--owner~ /owner_name/           | ~-u~ /owner_name/      | GHSAを調査したいリポジトリの所有者を指定                          |
-| 必須 | ~--repository~ /repository_name/ | ~-r~ /repository_name/ | GHSAを調査したいリポジトリの名前を指定                            |
-| 任意 | ~--output~ /filename/            | ~-o~ /filename/        | 出力されるファイルの名前を指定 指定しなければ ~output.csv~ に出力 |
+|------+----------------------------------+------------------------+------------------------------------------|
+|      | オプション                       | 省略                   | 説明                                     |
+|------+----------------------------------+------------------------+------------------------------------------|
+| 必須 | ~--owner~ /owner_name/           | ~-u~ /owner_name/      | GHSAを調査したいリポジトリの所有者を指定 |
+| 必須 | ~--repository~ /repository_name/ | ~-r~ /repository_name/ | GHSAを調査したいリポジトリの名前を指定   |
+|------+----------------------------------+------------------------+------------------------------------------|
 
-オプションにて指定したファイル名で ~result~ ディレクトリ以下にcsv形式で保存された結果の確認
-      
-~ghsa ID, Affected version, CVE ID, CVSSv2, CVSSv3, CWE ID~ の順番でcsvを出力（存在しない項目は空白）
 
 ** データベース
 ~database/repository_name.db~ ファイルを作成
@@ -111,6 +109,13 @@ select count(ghsa_id) from ghsa;
 select * from ghsa natural left outer join cve natural left outer join cve_cwe natural left outer join cwe;
 #+END_SRC
 
+*** データベースのCSVファイルへの出力
+#+BEGIN_SRC sqlite
+.mode csv
+.output output.csv -- 出力したいファイル名
+-- csvファイルに出力するsql文
+select * from ghsa natural left outer join cve natural left outer join cve_cwe natural left outer join cwe;
+#+END_SRC
       
 ** LICENSE
    MIT License
