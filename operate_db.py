@@ -108,19 +108,17 @@ def insert_db(dbname, unite_info_list):
     colmun_names = ['ghsa_id', 'affected_version', 'cve_id', 'cvss_v2', 'cvss_v3', 'cve_description', 'cwe_id', 'cwe_description']
 
     for unite_info in unite_info_list:
-        unite_info_dict = dict(zip(colmun_names, unite_info))
-        insert_db(conn, cur, unite_info_dict)
-
-    # insert data to each tables
-    insert_ghsa_table(conn, cur, row)   
-    if row['cve_id']:
-        insert_cve_table(conn, cur, row)
-        insert_cve_cwe_table(conn, cur, row)
-        insert_cwe_table(conn, cur, row)
+        row = dict(zip(colmun_names, unite_info))
         
+        insert_ghsa_table(conn, cur, row)   
+        if row['cve_id']:
+            insert_cve_table(conn, cur, row)
+            insert_cve_cwe_table(conn, cur, row)
+            insert_cwe_table(conn, cur, row)
+
     # print tables
     cur.execute("""
-SELECT * FROM ghsa, cve, cve_cwe, cweselect * from ghsa natural left outer join cve natural left outer join cve_cwe natural left outer join cwe
+select * from ghsa, cve, cve_cwe, cwe natural left outer join cve natural left outer join cve_cwe natural left outer join cwe
 """)
 
     # clise db connection

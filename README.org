@@ -106,7 +106,7 @@ select count(ghsa_id) from ghsa;
 
 + 全てのデータを取得
 #+BEGIN_SRC sql
-select * from ghsa natural left outer join cve natural left outer join cve_cwe natural left outer join cwe;
+select * from ghsa, cve, cve_cwe, cwe natural left outer join cve natural left outer join cve_cwe natural left outer join cwe;
 #+END_SRC
 
 *** データベースのCSVファイルへの出力

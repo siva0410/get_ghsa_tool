@@ -1,11 +1,9 @@
 import argparse
 import csv
 
-import sqlite3
-
-from get_ghsa import *
-from get_cve_info import *
-from operate_db import *
+from get_ghsa import get_ghsa, get_ghsa_info
+from get_cve_info import get_cve_info
+from operate_db import insert_db
 
 def main():
     # parse argments
@@ -33,8 +31,7 @@ def main():
     unite_info_list = [ghsa_info + cve_info + [] for (ghsa_info, cve_info) in zip(ghsa_info_list, cve_info_list)]
         
     # insert informatin to db
-    dbname = "database/"+REPOSITORY+".db"
-    
+    dbname = "database/"+REPOSITORY+".db"    
     insert_db(dbname, unite_info_list)
     
 
